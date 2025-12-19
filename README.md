@@ -23,10 +23,12 @@ A production-style **reverse proxy** in Go with **multi-backend load balancing, 
 python3 -m http.server 8081
 python3 -m http.server 8082
 python3 -m http.server 8083
+```
 
 2. Run the proxy:
 
 ```bash
 go run .
+```
 
 3. Access proxy at http://localhost:8080/ and metrics at /metrics.
