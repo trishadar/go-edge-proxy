@@ -1,6 +1,6 @@
 # Go Edge Proxy
 
-A production-style **reverse proxy** in Go with **multi-backend load balancing, IP-based rate limiting, logging, metrics, and graceful shutdown**.
+A high-performance reverse proxy built in Go that supports multiple backend servers with round-robin load balancing, per-IP rate limiting, request logging, real-time metrics, and graceful shutdown.
 
 ---
 
