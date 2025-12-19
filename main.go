@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
-	"net/url"
 	"os"
 	"os/signal"
 	"time"
@@ -14,17 +13,28 @@ import (
 )
 
 func main() {
-	// Where we forward requests to
-	target, _ := url.Parse("http://localhost:8081")
+
+	// Create backend pool
+	backendURLs := []string{
+		"http://localhost:8081",
+		"http://localhost:8082",
+		"http://localhost:8083",
+	}
+	pool := NewBackendPool(backendURLs)
+
 	// Create the reverse proxy
-	proxy := httputil.NewSingleHostReverseProxy(target)
+	proxy := &httputil.ReverseProxy{
+		Director: func(req *http.Request) {
+			backend := pool.NextBackend()
+			req.URL.Scheme = backend.Scheme
+			req.URL.Host = backend.Host
+		},
+	}
 
 	// Create a new ServeMux (router)
 	mux := http.NewServeMux()
-
 	// Add metrics endpoint
 	mux.Handle("/metrics", middleware.MetricsHandler())
-
 	// Add reverse proxy wrapped with rate limiter and logging
 	mux.Handle("/", middleware.RateLimit(middleware.Logging(proxy)))
 
